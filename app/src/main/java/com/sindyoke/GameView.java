@@ -1,6 +1,7 @@
 package com.sindyoke;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -39,7 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     gameThread.join();
                     retry = false;
                 } catch (InterruptedException e){
-
+                    Log.e("GameView", "error while destroying surface", e);
                 }
             }
         }
@@ -57,7 +58,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         int action = event.getAction();
         // tap is detected
         if(action==MotionEvent.ACTION_DOWN){
-            AppConstants.getGameEngine().gameState = 1;
+            if(AppConstants.getGameEngine().gameState==0){
+                AppConstants.getGameEngine().gameState = 1;
+                AppConstants.getSoundBank().playSwoosh();
+            } else {
+                AppConstants.getSoundBank().playWing();
+            }
             AppConstants.getGameEngine().bird.setVelocity(AppConstants.VELOCITY_WHEN_JUMPED);
         }
         return true;
